@@ -1,14 +1,14 @@
 import os
 from vlc import MediaListPlayer, MediaList, Media, MediaPlayer
 import logging
-from spotipy.client import SpotifyException
-
-from sp import SpotipyPlayer
-from read_musiclist import get_musiclist, MusicType
 
 DEBUG = True
 if DEBUG:
     logging.basicConfig(level=logging.DEBUG)
+
+from spotipy.client import SpotifyException
+from sp import SpotipyPlayer
+from read_musiclist import get_musiclist, MusicType
 
 path = os.path.dirname(__file__)
 music_list = get_musiclist()
