@@ -29,9 +29,6 @@ def get_musiclist(file=DEFAULT_PATH):
     music_list = {}
 
     for rfid_key in config:
-        if rfid_key == 'DEFAULT':
-            continue
-
         name = config[rfid_key].get('name')
         music_type_str = config[rfid_key].get('type')
         items = config[rfid_key].get('items')

@@ -121,6 +121,7 @@ class Player(object):
 
 
 player = Player(music_list)
+player.play('DEFAULT')
 
 try:
     while True:
