@@ -87,7 +87,10 @@ class Player(object):
 
     def __play_music(self, music_item):
         if music_item.type == MusicType.File:
-            self.player.set_media_list(MediaList(music_item.items))
+            if isinstance(music_item.items, list):
+                self.player.set_media_list(MediaList(music_item.items))
+            else:
+                self.player.set_media_list(MediaList([music_item.items]))
             self.player.play()
         elif music_item.type == MusicType.Url:
             stream = Media(music_item.items)
