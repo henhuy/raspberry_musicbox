@@ -6,7 +6,7 @@ import logging
 
 MusicItem = namedtuple('MusicItem', ['name', 'type', 'items'])
 
-DEFAULT_PATH = 'music.cfg'
+DEFAULT_PATH = '/home/pi/raspberry_musicbox/music.cfg'
 
 
 class MusicType(Enum):
