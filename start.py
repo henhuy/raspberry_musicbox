@@ -126,6 +126,9 @@ player.play('DEFAULT')
 try:
     while True:
         rfid_data = input('Please enter music entry:')
+        if rfid_data == 'list':
+            print(music_list)
+            continue
         if rfid_data not in music_list:
             logging.warning('Could not find data for RFID #' + str(rfid_data))
         else:
