@@ -99,7 +99,7 @@ class Player(object):
             self.player.play()
         elif music_item.type == MusicType.Folder:
             song_list = [os.path.join(music_item.items, file) for file in os.listdir(music_item.items)]
-            self.player.set_media_list(MediaList(song_list))
+            self.player.set_media_list(MediaList(sorted(song_list)))
             self.player.play()
         elif music_item.type == MusicType.Spotify:
             if music_item.items is None:
