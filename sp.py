@@ -3,14 +3,12 @@ import spotipy.util as util
 import logging
 from configparser import ConfigParser
 
-DEVICE_NAME = 'pc-henner'
-
 
 class SpotipyPlayer(object):
     def __init__(self):
-        config = ConfigParser()
-        config.read('spotify.cfg')
-        credentials = dict(config['DEFAULT'])
+        self.config = ConfigParser()
+        self.config.read('spotify.cfg')
+        credentials = dict(self.config['DEFAULT'])
         token = util.prompt_for_user_token(**credentials)
         self.sp = client.Spotify(auth=token)
         self.device_id = self.__find_device()
@@ -22,7 +20,7 @@ class SpotipyPlayer(object):
         if devices is None:
             RuntimeError('No spotify devices found')
         for dev in devices['devices']:
-            if dev['name'] == DEVICE_NAME:
+            if dev['name'] == self.config['device']['name']:
                 return dev['id']
         logging.warning('Found devices: ' + str(devices))
         raise NameError(
