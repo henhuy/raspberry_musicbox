@@ -12,15 +12,14 @@ Music files, folders and urls are read in from config file (defaults to "./music
 Structure of music configuration must look as follows:
 
 ```
-[DEFAULT]
+[<RFID of card reader>]
     name = <Custom name>
     type = <file/folder/url/spotify>
-    items = <list of 
-[03251095]
-    name = Janosch
-    type = folder
-    items = /home/pi/Music/janosch
+    items = <url or comma-separated-list-of-files-or-folders>
+    track_mode = <optional, "single" or "album", defaults to "single">
 ```
+
+Config must hold section with RFID "DEFAULT", which played at startup.
 
 ## Environment Variables
 
