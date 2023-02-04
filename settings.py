@@ -3,7 +3,7 @@ import os
 import logging
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
-DATA_DIR = os.path.join(ROOT_DIR, "data")
+DATA_DIR = os.environ.get("MUSIC_DATA_PATH", os.path.join(ROOT_DIR, "data"))
 
 MUSIC_LIST = os.environ.get("MUSIC_LIST", os.path.join(ROOT_DIR, "music.cfg"))
 
