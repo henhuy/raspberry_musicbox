@@ -31,7 +31,7 @@ def get_musiclist(file=MUSIC_LIST):
     for rfid_key in config:
         name = config[rfid_key].get('name')
         music_type_str = config[rfid_key].get('type')
-        items = config[rfid_key].get('items')
+        items = config[rfid_key].get('items').split(",")
         if any([name, music_type_str, items]) is None:
             logging.warning('Could not import music item for rfid key #' + rfid_key)
             continue

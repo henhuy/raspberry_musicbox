@@ -9,6 +9,7 @@ if DEBUG:
 from spotipy.client import SpotifyException
 from sp import SpotipyPlayer
 from read_musiclist import get_musiclist, MusicType
+from settings import DATA_DIR
 
 path = os.path.dirname(__file__)
 music_list = get_musiclist()
@@ -87,10 +88,8 @@ class Player(object):
 
     def __play_music(self, music_item):
         if music_item.type == MusicType.File:
-            if isinstance(music_item.items, list):
-                self.player.set_media_list(MediaList(music_item.items))
-            else:
-                self.player.set_media_list(MediaList([music_item.items]))
+            music_files = [os.path.join(DATA_DIR, item) for item in music_item.items]
+            self.player.set_media_list(MediaList(music_files))
             self.player.play()
         elif music_item.type == MusicType.Url:
             stream = Media(music_item.items)
@@ -98,7 +97,8 @@ class Player(object):
             self.player.set_media(stream)
             self.player.play()
         elif music_item.type == MusicType.Folder:
-            song_list = [os.path.join(music_item.items, file) for file in os.listdir(music_item.items)]
+            music_folder = os.path.join(DATA_DIR, music_item.items)
+            song_list = [os.path.join(music_folder, file) for file in os.listdir(music_folder)]
             self.player.set_media_list(MediaList(sorted(song_list)))
             self.player.play()
         elif music_item.type == MusicType.Spotify:
