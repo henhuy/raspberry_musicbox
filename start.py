@@ -109,13 +109,13 @@ class Player(object):
             count_index = 0
             music_indices = []
             for music_folder in music_item.items:
-                music_indices.append(count_index)
                 music_folder_path = os.path.join(DATA_DIR, music_folder)
                 try:
                     music_files = os.listdir(music_folder_path)
                 except FileNotFoundError:
                     logging.error("Could not find music folder at '%s'", music_folder)
                     continue
+                music_indices.append(count_index)
                 count_index += len(music_files)
                 song_list.extend(
                     sorted(os.path.join(music_folder_path, file) for file in music_files)
