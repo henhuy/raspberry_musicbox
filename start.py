@@ -1,6 +1,7 @@
 import os
 from vlc import MediaListPlayer, MediaList, Media, MediaPlayer
 import logging
+from itertools import cycle
 
 DEBUG = True
 if DEBUG:
@@ -25,6 +26,8 @@ class Player(object):
     def __init__(self, music_data):
         self.current = None
         self.music_list = music_data
+        self.music_indices = None
+        self.current_music_index = 0
         self.player = None
         self.players = []
         self.__init_players()
@@ -64,16 +67,20 @@ class Player(object):
             return
         if isinstance(self.player, SpotipyPlayer):
             self.player.next()
-        elif self.music_list[self.current].type == MusicType.Url:
+            return
+        if self.music_list[self.current].type == MusicType.Url:
             logging.info('Cannot skip radio stream tracks')
             return
-        elif len(self.music_list[self.current].items) == 1:
+        if len(self.music_list[self.current].items) == 1:
             logging.info('Single music item is already running')
             return
-        else:
-            status = self.player.next()
-            if status == -1:
-                self.player.next()
+        if self.music_indices:
+            self.player.play_item_at_index(next(self.music_indices))
+            return
+
+        status = self.player.next()
+        if status == -1:
+            self.player.next()
 
     def stop(self):
         if self.player is None:
@@ -87,6 +94,7 @@ class Player(object):
                 pass
 
     def __play_music(self, music_item):
+        self.music_indices = None
         if music_item.type == MusicType.File:
             music_files = [os.path.join(DATA_DIR, item) for item in music_item.items]
             self.player.set_media_list(MediaList(music_files))
@@ -97,9 +105,18 @@ class Player(object):
             self.player.set_media(stream)
             self.player.play()
         elif music_item.type == MusicType.Folder:
-            music_folder = os.path.join(DATA_DIR, music_item.items)
-            song_list = [os.path.join(music_folder, file) for file in os.listdir(music_folder)]
-            self.player.set_media_list(MediaList(sorted(song_list)))
+            song_list = []
+            count_index = 0
+            music_indices = []
+            for music_folder in music_item.items:
+                music_indices.append(count_index)
+                music_folder_path = os.path.join(DATA_DIR, music_folder)
+                count_index += len(os.listdir(music_folder_path))
+                song_list.extend(
+                    sorted(os.path.join(music_folder_path, file) for file in os.listdir(music_folder_path))
+                )
+            self.music_indices = cycle(music_indices)
+            self.player.set_media_list(MediaList(song_list))
             self.player.play()
         elif music_item.type == MusicType.Spotify:
             if music_item.items is None:
