@@ -6,7 +6,21 @@ import logging
 
 from settings import MUSIC_LIST
 
-MusicItem = namedtuple('MusicItem', ['name', 'type', 'items'])
+MusicItem = namedtuple('MusicItem', ['name', 'type', 'items', 'track_mode'])
+
+DEFAULT_TRACK_MODE = "single"
+
+
+class TrackMode(Enum):
+    Single = "single"
+    Album = "album"
+
+    @classmethod
+    def find_type(cls, item):
+        for attr in cls:
+            if attr.value == item:
+                return attr
+        raise KeyError("There is no track mode '%s'", item)
 
 
 class MusicType(Enum):
@@ -20,7 +34,7 @@ class MusicType(Enum):
         for attr in cls:
             if attr.value == item:
                 return attr
-        return None
+        raise KeyError
 
 
 def get_musiclist(file=MUSIC_LIST):
@@ -32,6 +46,7 @@ def get_musiclist(file=MUSIC_LIST):
         name = config[rfid_key].get('name')
         music_type_str = config[rfid_key].get('type')
         items = config[rfid_key].get('items').split(",")
+        track_mode = TrackMode.find_type(config[rfid_key].get('track_mode', DEFAULT_TRACK_MODE))
         if any([name, music_type_str, items]) is None:
             logging.warning('Could not import music item for rfid key #' + rfid_key)
             continue
@@ -42,6 +57,6 @@ def get_musiclist(file=MUSIC_LIST):
             logging.warning('Could not detect music type for rfid key #' + rfid_key)
             continue
 
-        music_list[rfid_key] = MusicItem(name, music_type, items)
+        music_list[rfid_key] = MusicItem(name, music_type, items, track_mode)
 
     return music_list

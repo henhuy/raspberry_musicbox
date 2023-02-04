@@ -9,7 +9,7 @@ if DEBUG:
 
 from spotipy.client import SpotifyException
 from sp import SpotipyPlayer
-from read_musiclist import get_musiclist, MusicType
+from read_musiclist import get_musiclist, MusicType, TrackMode
 from settings import DATA_DIR
 
 path = os.path.dirname(__file__)
@@ -120,8 +120,9 @@ class Player(object):
                 song_list.extend(
                     sorted(os.path.join(music_folder_path, file) for file in music_files)
                 )
-            self.music_indices = cycle(music_indices)
-            next(self.music_indices)
+            if music_item.track_mode == TrackMode.Album:
+                self.music_indices = cycle(music_indices)
+                next(self.music_indices)
             self.player.set_media_list(MediaList(song_list))
             self.player.play()
         elif music_item.type == MusicType.Spotify:
