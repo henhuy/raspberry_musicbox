@@ -4,9 +4,9 @@ from collections import namedtuple
 from enum import Enum
 import logging
 
-MusicItem = namedtuple('MusicItem', ['name', 'type', 'items'])
+from settings import MUSIC_LIST
 
-DEFAULT_PATH = '/home/pi/raspberry_musicbox/music.cfg'
+MusicItem = namedtuple('MusicItem', ['name', 'type', 'items'])
 
 
 class MusicType(Enum):
@@ -23,7 +23,7 @@ class MusicType(Enum):
         return None
 
 
-def get_musiclist(file=DEFAULT_PATH):
+def get_musiclist(file=MUSIC_LIST):
     config = ConfigParser()
     config.read(file)
     music_list = {}
