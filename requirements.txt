@@ -1,0 +1,2 @@
+python-vlc==3.0.101
+spotipy==2.4.4
