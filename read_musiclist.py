@@ -45,7 +45,7 @@ def get_musiclist(file=MUSIC_LIST):
     for rfid_key in config:
         name = config[rfid_key].get('name')
         music_type_str = config[rfid_key].get('type')
-        items = config[rfid_key].get('items').split(",")
+        items = config[rfid_key].get('items')
         track_mode = TrackMode.find_type(config[rfid_key].get('track_mode', DEFAULT_TRACK_MODE))
         if any([name, music_type_str, items]) is None:
             logging.warning('Could not import music item for rfid key #' + rfid_key)
@@ -56,6 +56,10 @@ def get_musiclist(file=MUSIC_LIST):
         except KeyError:
             logging.warning('Could not detect music type for rfid key #' + rfid_key)
             continue
+
+        # Create list of items in case of folder or file type:
+        if music_type in (MusicType.File, MusicType.Folder):
+            items = items.split(",")
 
         music_list[rfid_key] = MusicItem(name, music_type, items, track_mode)
 
