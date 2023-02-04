@@ -111,11 +111,17 @@ class Player(object):
             for music_folder in music_item.items:
                 music_indices.append(count_index)
                 music_folder_path = os.path.join(DATA_DIR, music_folder)
-                count_index += len(os.listdir(music_folder_path))
+                try:
+                    music_files = os.listdir(music_folder_path)
+                except FileNotFoundError:
+                    logging.error("Could not find music folder at '%s'", music_folder)
+                    continue
+                count_index += len(music_files)
                 song_list.extend(
-                    sorted(os.path.join(music_folder_path, file) for file in os.listdir(music_folder_path))
+                    sorted(os.path.join(music_folder_path, file) for file in music_files)
                 )
             self.music_indices = cycle(music_indices)
+            next(self.music_indices)
             self.player.set_media_list(MediaList(song_list))
             self.player.play()
         elif music_item.type == MusicType.Spotify:
